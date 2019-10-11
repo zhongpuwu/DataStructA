@@ -22,47 +22,44 @@ bool In(Street &St, Stop &Sp, TheCar &c, int n, int t)
 {
     if (!Stopfull(Sp, n))
     {
-        cout << "在" << t << "时刻，车牌为" << c.id << "的汽车驶入停车场，位置是" << SqStackLength(Sp) << endl;
+        cout << t << ":00 汽车" << c.id << "驶入停车场，位置是" << SqStackLength(Sp) << endl;
         PushSqStack(Sp, c);
         return true;
     }
     else
     {
-        cout << "在" << t << "时刻，车牌为" << c.id << "的汽车驶入便道，位置是" << QueueLength(St) << endl;
+        cout << t << ":00 汽车" << c.id << "驶入便道，位置是" << QueueLength(St) << endl;
         EnQueue(St, c);
         return false;
     }
 }
 
-bool OutStreet(Street &St, LinkNode *pre, int t)
+bool OutStop(TheCar &c, int t)
 {
-    LinkNode *p = pre->next;
-    pre->next = p->next;
-    cout << "在" << t << "时刻，车牌为" << p->data.id << "的汽车离开便道，有效停车时间为" << p->data.times << endl;
-    p = NULL;
+    cout << t << ":00 汽车" << c.id << "离开停车场，有效停车时间为" << c.times << endl;
     return true;
 }
 
-bool OutStop(Stop &Sp, Street &St, int id, int t)
-{
-    TheCar c;
-    do
-    {
-        PopSqStack(Sp, c);
-    } while (c.id != id);
-    EnQueue(St, c);
-    cout << "在" << t << "时刻，车牌为" << c.id << "的汽车离开停车场，有效停车时间为" << c.times << endl;
-    return true;
-}
-
-bool Fill(Stop &Sp, Street &St, int n)
+bool Fill(Stop &Sp, Street &St, int n, int t)
 {
     TheCar c;
     while (!Stopfull(Sp, n))
     {
-        DeQueue(St, c);
-        PushSqStack(Sp, c);
-        if (StreetEmpty(St))
+        if (!StreetEmpty(St))
+        {
+            DeQueue(St, c);
+            if (c.out < t)
+                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << ",等待时间为" << t - c.out << endl;
+            else if (c.out == t)
+                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << endl;
+            else
+            {
+                cout << t << ":00 汽车" << c.id << "离开便道，进入停车场" << endl;
+                c.times++;
+                PushSqStack(Sp, c);
+            }
+        }
+        else
             break;
     }
     return true;
@@ -84,9 +81,10 @@ int main()
         pCars[i].able = true;
     }
     Street St;
-    Stop Sp;
+    Stop Sp, Spf;
     InitStreet(St);
     InitStop(Sp, n);
+    InitStop(Spf, n); // 构造一个出停车场时的辅助栈
 
     for (int t = 0; t < 20; t++)
     {
@@ -98,28 +96,26 @@ int main()
                 pCars[j].able = false;
             }
         }
-        for (int j = 0; j < SqStackLength(Sp); j++)
-        {
-            if ((Sp.base + j)->out == t)
-                OutStop(Sp, St, (Sp.base + j)->id, t);
-            else
-                (Sp.base + j)->times++;
-        }
         TheCar c;
-        if (!StreetEmpty(St))
-            if (St.front->data.out == t)
+        while (PopSqStack(Sp, c))
+        {
+            PushSqStack(Spf, c);
+        }
+        while (!StopEmpty(Spf))
+        {
+            PopSqStack(Spf, c);
+            if (c.out == t)
             {
-                DeQueue(St, c);
-                cout << "在" << t << "时刻，车牌为" << c.id << "的汽车离开便道，有效停车时间为" << c.times << endl;
+                OutStop(c, t);
             }
-        if (St.front->next != NULL && St.front != NULL)
-            for (LinkNode *p = St.front; p->next->next != NULL; p = p->next)
+            else
             {
-                if (p->next->data.out == t)
-                    OutStreet(St, p, t);
+                c.times++;
+                PushSqStack(Sp, c);
             }
+        } // 使用辅助栈统计停车场车辆
         if (!StreetEmpty(St) && !Stopfull(Sp, n))
-            Fill(Sp, St, n);
+            Fill(Sp, St, n, t); // 填充停车场，清理出场车辆
     }
 
     DestroyStreet(St);

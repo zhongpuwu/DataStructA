@@ -1,6 +1,5 @@
 #ifndef _Realign_H_
 #define _Realign_H_
-#define NULL 0
 
 struct TheCar
 {
