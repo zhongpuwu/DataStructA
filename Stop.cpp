@@ -18,53 +18,6 @@ TheCar *pCars;
 // 结束了所有输入后才可以进行停车场模拟
 // 时间控制在20个时刻内
 
-bool In(Street &St, Stop &Sp, TheCar &c, int n, int t)
-{
-    if (!Stopfull(Sp, n))
-    {
-        cout << t << ":00 汽车" << c.id << "驶入停车场，位置是" << SqStackLength(Sp) << endl;
-        PushSqStack(Sp, c);
-        return true;
-    }
-    else
-    {
-        cout << t << ":00 汽车" << c.id << "驶入便道，位置是" << QueueLength(St) << endl;
-        EnQueue(St, c);
-        return false;
-    }
-}
-
-bool OutStop(TheCar &c, int t)
-{
-    cout << t << ":00 汽车" << c.id << "离开停车场，有效停车时间为" << c.times << endl;
-    return true;
-}
-
-bool Fill(Stop &Sp, Street &St, int n, int t)
-{
-    TheCar c;
-    while (!Stopfull(Sp, n))
-    {
-        if (!StreetEmpty(St))
-        {
-            DeQueue(St, c);
-            if (c.out < t)
-                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << ",等待时间为" << t - c.out << endl;
-            else if (c.out == t)
-                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << endl;
-            else
-            {
-                cout << t << ":00 汽车" << c.id << "离开便道，进入停车场" << endl;
-                c.times++;
-                PushSqStack(Sp, c);
-            }
-        }
-        else
-            break;
-    }
-    return true;
-}
-
 int main()
 {
     int n, x; //停车场长度，车辆个数；
@@ -84,7 +37,7 @@ int main()
     Stop Sp, Spf;
     InitStreet(St);
     InitStop(Sp, n);
-    InitStop(Spf, n); // 构造一个出停车场时的辅助栈
+    InitStop(Spf, n); // 构造一个出停车场的辅助栈
 
     for (int t = 0; t < 20; t++)
     {
