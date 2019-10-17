@@ -88,7 +88,7 @@ bool Fill(Stop &Sp, Street &St, int n, int t)
         {
             DeQueue(St, c);
             if (c.out < t)
-                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << ",等待时间为" << t - c.out << endl;
+                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << ",比意愿时间晚了" << t - c.out << "时刻" << endl;
             else if (c.out == t)
                 cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << endl;
             else

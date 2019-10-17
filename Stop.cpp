@@ -11,7 +11,7 @@ using namespace std;
 
 #include "Move.h"
 
-TheCar *pCars;
+TheCar *pCars; // 存放输入的数据
 
 // 假设便道无限长
 // 规定车辆在停车场中和便道上的移动都是瞬时的
@@ -32,16 +32,17 @@ int main()
     {
         cin >> pCars[i].id >> pCars[i].in >> pCars[i].out;
         pCars[i].able = true;
-    }
+    } // 录入车辆信息
+
     Street St;
     Stop Sp, Spf;
-    InitStreet(St);
-    InitStop(Sp, n);
+    InitStreet(St);   // 构造便道
+    InitStop(Sp, n);  // 构造停车场
     InitStop(Spf, n); // 构造一个出停车场的辅助栈
 
-    for (int t = 0; t < 20; t++)
+    for (int t = 0; t < 20; t++) // 时间循环
     {
-        for (int j = 0; j < x; j++)
+        for (int j = 0; j < x; j++) //扫描输入的数据
         {
             if (pCars[j].in == t && pCars[j].able == true)
             {
@@ -49,6 +50,7 @@ int main()
                 pCars[j].able = false;
             }
         }
+
         TheCar c;
         while (PopSqStack(Sp, c))
         {
@@ -66,12 +68,16 @@ int main()
                 c.times++;
                 PushSqStack(Sp, c);
             }
-        } // 使用辅助栈统计停车场车辆
+        }
+        // 借助辅助栈统计停车场车辆 和出停车场的操作
+
         if (!StreetEmpty(St) && !Stopfull(Sp, n))
-            Fill(Sp, St, n, t); // 填充停车场，清理出场车辆
+            Fill(Sp, St, n, t);
+        // 填充停车场，清理出场车辆
     }
 
     DestroyStreet(St);
+    DestroyStop(Spf);
     DestroyStop(Sp);
     delete[] pCars;
 
