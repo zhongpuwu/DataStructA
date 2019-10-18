@@ -3,7 +3,6 @@
 
 struct TheCar
 {
-    bool able = true; // 记录数据有效性
     int id = 0;       // 记录车牌
     int times = 0;    // 记录有效时长
     int in = 0;       // 记录进场时刻
@@ -101,6 +100,36 @@ bool Fill(Stop &Sp, Street &St, int n, int t)
         else
             break;
     }
+    return true;
+}
+
+bool Print(Stop &Sp, Street &St, int n)
+{
+    Street Stf;
+    Stop Spf;
+    TheCar c;
+    InitStop(Spf, n);
+    InitStreet(Stf);
+    while (PopSqStack(Sp, c))
+    {
+        PushSqStack(Spf, c);
+    }
+    cout << "停车场:";
+    while (PopSqStack(Spf, c))
+    {
+        cout << c.id << " ";
+    }
+    cout << endl;
+    cout << "便道:";
+    while (DeQueue(St, c))
+    {
+        cout << c.id << " ";
+        EnQueue(Stf,c);
+    }
+    DestroyStreet(St);
+    DestroyStop(Spf);
+    St=Stf;
+    cout << endl;
     return true;
 }
 
