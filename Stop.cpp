@@ -56,7 +56,8 @@ Label2:
     cout << endl;
     if (!Search_write(Sp, St, n, id, time))
     {
-        cout << "查无此车\n" << endl;
+        cout << "查无此车\n"
+             << endl;
         goto Label2;
     }
     if (time < t)
@@ -79,7 +80,7 @@ Label2:
 int main()
 {
     int t = 0;
-    char com;
+    char com = ' ';
     int n; // 停车场长度，车辆个数；
     Stop Sp;
     Street St;
@@ -112,7 +113,7 @@ int main()
                 Quit(St, Sp, n, t);
                 break;
             case 'Q':
-                continue;
+                goto Label3;
             default:
                 cout << "指令不存在，请重新输入" << endl;
                 continue;
@@ -120,13 +121,14 @@ int main()
         }
         else
         {
+        Label3:
+            // 如果输入了Q就进行判断 判断成功才能结束程序
             if (StreetEmpty(St) && StopEmpty(Sp))
             {
                 cout << "停车场已空!程序结束!" << endl;
-                cout << endl;
                 break;
             }
-            else if (StopEmpty(Sp))
+            else if (!StopEmpty(Sp))
             {
                 cout << "停车场还有车辆未使出，请重新输入指令" << endl;
                 com = ' ';
