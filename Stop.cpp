@@ -18,18 +18,30 @@ bool Jump(int &t)
     cout << "跳转成功!" << endl;
     return true;
 }
-bool Come(Street &St, Stop &Sp, int t)
+bool Come(Street &St, Stop &Sp, int n, int t)
 {
-    cout << "";
+    TheCar c;
+    int time;
+    cout << "请依次输入车牌 到达时间" << endl;
+    cin >> c.id >> time;
+    cout << endl;
+    c.in = time;
+    In(St, Sp, c, n, t);
     return true;
 }
-bool Quit()
+bool Quit(Street &St, Stop &Sp, int n, int t)
 {
+    int id, time;
+    cout << "请依次输入车牌 出站时间" << endl;
+    cin >> id >> time;
+    cout << endl;
+    Search_write(Sp, St, n, id, time);
     return true;
 }
 
 // 假设便道无限长
 // 规定车辆在停车场中和便道上的移动都是瞬时的
+// 进停车场可以改变时间 出只会记录时间
 
 int main()
 {
@@ -45,53 +57,53 @@ int main()
     cin >> n;
     while (1)
     {
+        cout << endl;
         cout << "当前时间: " << t << ":00" << endl;
         Print(Sp, St, n);
+        cout << endl;
         if (com != 'Q')
         {
-            cout << "请输入需要进行的操作:A/D/Q/J" << endl;
-            cout << "A代表入站/D代表出站/Q代表结束输入/J代表跳转时间" << endl;
+            cout << "请输入需要进行的操作:A/D/Q/J ";
+            cout << "PS:(A代表入站/D代表出站/Q代表结束输入/J代表跳转时间)" << endl;
             cin >> com;
+            cout << endl;
             switch (com)
             {
             case 'J':
                 Jump(t);
                 break;
             case 'A':
-                Come(St, Sp, t);
+                Come(St, Sp, n, t);
                 break;
             case 'D':
-                Quit();
+                Quit(St, Sp, n, t);
+                break;
+            case 'Q':
+                continue;
+            default:
+                cout << "指令不存在，请重新输入" << endl;
+                continue;
+            }
+        }
+        else
+        {
+            if (StreetEmpty(St) && StopEmpty(Sp))
+            {
+                cout << "停车场已空!程序结束!" << endl;
+                cout << endl;
                 break;
             }
         }
-        // TheCar c;
-        // while (PopSqStack(Sp, c))
-        // {
-        //     PushSqStack(Spf, c);
-        // }
-        // while (!StopEmpty(Spf))
-        // {
-        //     PopSqStack(Spf, c);
-        //     if (c.out == t)
-        //     {
-        //         OutStop(c, t);
-        //     }
-        //     else
-        //     {
-        //         c.times++;
-        //         PushSqStack(Sp, c);
-        //     }
-        // }
-        // 借助辅助栈统计停车场车辆 和出停车场的操作
+
+        if (!StopEmpty(Sp))
+        {
+            OutStop(Sp, n, t);
+        }
 
         if (!StreetEmpty(St) && !Stopfull(Sp, n))
         {
             Fill(Sp, St, n, t);
         }
-        // 填充停车场，清理出场车辆
-        if (!StopEmpty(Sp))
-            break;
     }
 
     DestroyStreet(St);
