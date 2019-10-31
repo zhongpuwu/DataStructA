@@ -3,10 +3,10 @@
 
 struct TheCar
 {
-    int id = 0;    // 记录车牌
-    int times = 0; // 记录有效时长
-    int in = 0;    // 记录进场时刻
-    int out = 10000;  // 记录意愿出场时刻
+    int id = 0;      // 记录车牌
+    int times = 0;   // 记录有效时长
+    int in = 0;      // 记录进场时刻
+    int out = 10000; // 记录意愿出场时刻
 };
 
 typedef TheCar SElemType;
@@ -87,7 +87,7 @@ bool OutStop(Stop &Sp, int n, int t)
     {
         if (c.out <= t)
         {
-            cout << t << ":00 汽车" << c.id << "离开停车场，有效停车时间为" << c.times << endl;
+            cout << c.out << ":00 汽车" << c.id << "离开停车场，有效停车时间为" << c.times << endl;
         }
         else
         {
@@ -109,8 +109,6 @@ bool Fill(Stop &Sp, Street &St, int n, int t)
         {
             DeQueue(St, c);
             if (c.out < t)
-                cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << ",比意愿时间晚了" << t - c.out << "时刻" << endl;
-            else if (c.out == t)
                 cout << t << ":00 汽车" << c.id << "离开便道，有效停车时间为" << c.times << endl;
             else
             {
@@ -184,13 +182,17 @@ bool Search(Stop &Sp, Street &St, int n, int id)
             flag = 1;
         EnQueue(Stf, c);
     }
-    DestroyStreet(St);
+    Street Stt = St;
+    St = Stf;
+    DestroyStreet(Stt);
     DestroyStop(Spf);
     if (flag)
         return true;
     else
         return false;
 }
+
+// 查找并将出站的记录写入到车辆记录中
 bool Search_write(Stop &Sp, Street &St, int n, int id, int out)
 {
     Street Stf;
@@ -223,7 +225,9 @@ bool Search_write(Stop &Sp, Street &St, int n, int id, int out)
         }
         EnQueue(Stf, c);
     }
-    DestroyStreet(St);
+    Street Stt = St;
+    St = Stf;
+    DestroyStreet(Stt);
     DestroyStop(Spf);
     if (flag)
         return true;

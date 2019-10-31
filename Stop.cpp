@@ -15,28 +15,61 @@ bool Jump(int &t)
 {
     cout << "请输入您要跳转的时间:";
     cin >> t;
-    cout << "跳转成功!" << endl;
+    cout << endl;
+    cout << "跳转成功!\n"
+         << endl;
     return true;
 }
-bool Come(Street &St, Stop &Sp, int n, int t)
+bool Come(Street &St, Stop &Sp, int n, int &t)
 {
     TheCar c;
     int time;
+Label1:
+    // 用于重新输入 不想写循环
     cout << "请依次输入车牌 到达时间" << endl;
     cin >> c.id >> time;
     cout << endl;
+    if (Search(Sp, St, n, c.id))
+    {
+        cout << "车牌已被占用，请换一个！\n"
+             << endl;
+        goto Label1;
+    }
+    if (time < t)
+    {
+        cout << "入站时间不能小于当前时间，请换一个！\n"
+             << endl;
+        goto Label1;
+    }
     c.in = time;
+    t = time;
     In(St, Sp, c, n, t);
     return true;
 }
 bool Quit(Street &St, Stop &Sp, int n, int t)
 {
     int id, time;
+Label2:
+    // 用于重新输入 不想写循环
     cout << "请依次输入车牌 出站时间" << endl;
     cin >> id >> time;
     cout << endl;
-    Search_write(Sp, St, n, id, time);
-    return true;
+    if (!Search_write(Sp, St, n, id, time))
+    {
+        cout << "查无此车\n" << endl;
+        goto Label2;
+    }
+    if (time < t)
+    {
+        cout << "出站时间不能小于当前时间，请换一个！\n"
+             << endl;
+        goto Label2;
+    }
+    else
+    {
+        cout << "出站意愿已经写入！" << endl;
+        return true;
+    }
 }
 
 // 假设便道无限长
@@ -59,7 +92,7 @@ int main()
     {
         cout << endl;
         cout << "当前时间: " << t << ":00" << endl;
-        Print(Sp, St, n);
+        Print(Sp, St, n); // 打印停车场当前状态
         cout << endl;
         if (com != 'Q')
         {
@@ -92,6 +125,12 @@ int main()
                 cout << "停车场已空!程序结束!" << endl;
                 cout << endl;
                 break;
+            }
+            else if (StopEmpty(Sp))
+            {
+                cout << "停车场还有车辆未使出，请重新输入指令" << endl;
+                com = ' ';
+                continue;
             }
         }
 
