@@ -35,16 +35,20 @@ Label1:
              << endl;
         goto Label1;
     }
-    if (time < t)
+    else if (time < t)
     {
         cout << "入站时间不能小于当前时间，请换一个！\n"
              << endl;
         goto Label1;
     }
-    c.in = time;
-    t = time;
-    In(St, Sp, c, n, t);
-    return true;
+    else
+    {
+
+        c.in = time;
+        t = time;
+        In(St, Sp, c, n, t);
+        return true;
+    }
 }
 bool Quit(Street &St, Stop &Sp, int n, int t)
 {
@@ -60,7 +64,7 @@ Label2:
              << endl;
         goto Label2;
     }
-    if (time < t)
+    else if (time < t)
     {
         cout << "出站时间不能小于当前时间，请换一个！\n"
              << endl;
@@ -110,10 +114,17 @@ int main()
                 Come(St, Sp, n, t);
                 break;
             case 'D':
-                Quit(St, Sp, n, t);
+                if (!StopEmpty(Sp))
+                    Quit(St, Sp, n, t);
+                else
+                {
+                    cout << "停车场为空时不能出站" << endl;
+                    continue;
+                }
                 break;
             case 'Q':
                 goto Label3;
+                // 直接判断停车场是否为空
             default:
                 cout << "指令不存在，请重新输入" << endl;
                 continue;
