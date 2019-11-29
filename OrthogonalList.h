@@ -38,5 +38,8 @@ int LocateVex(OLGraph G, VertexType u)
 }
 
 Status TopologicalSort(OLGraph)
+{
+    
+}
 
 #endif
