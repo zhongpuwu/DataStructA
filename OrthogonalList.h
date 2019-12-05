@@ -16,23 +16,23 @@ typedef char VertexType[MAX_NAME]; // 定义顶点的名称类型
 
 struct ArcBox // 弧结点，原来这东西叫做弧?!
 {
-    int tailvex, headvex;  // 该弧的尾和头顶点的位置(就是下标而已)
-    ArcBox *hlink, *tlink; // 分别为弧头相同和弧尾相同的弧的链域
-    InfoType *info;        // 该弧相关信息的指针(可此题不需要)
+    int tailvex, headvex;                // 该弧的尾和头顶点的位置(就是下标而已)
+    ArcBox *hlink = NULL, *tlink = NULL; // 分别为弧头相同和弧尾相同的弧的链域
+    InfoType *info = NULL;               // 该弧相关信息的指针(可此题不需要)
 };
 struct VexNode // 顶点结点不如说是顶点数组
 {
-    int credit;                 // 保存该顶点的学分
-    int indegree = 0;           // 保存顶点的入度，求拓扑排序时会用
-    bool able = true;           // 指示该顶点是否被删除，被删除的顶点不配拥有弧
-    VertexType id;              // 保存该顶点的课程代号
-    ArcBox *firstin, *firstout; // 分别指向该顶点第一条入弧和出弧
+    int credit;                               // 保存该顶点的学分
+    int indegree = 0;                         // 保存顶点的入度，求拓扑排序时会用
+    bool able = true;                         // 指示该顶点是否被删除，被删除的顶点不配拥有弧
+    VertexType id;                            // 保存该顶点的课程代号
+    ArcBox *firstin = NULL, *firstout = NULL; // 分别指向该顶点第一条入弧和出弧
 };
 struct OLGraph // 十字链表表示的有向图
 {
     VexNode xlist[MAX_VERTEX_NUM]; // 表头向量(数组)
-    int vexnum;                    // 有向图的当前顶点数和弧数
-    int arcnum;                    // 注意一下vex指的是顶点arc指的是弧
+    int vexnum = 0;                // 有向图的当前顶点数和弧数
+    int arcnum = 0;                // 注意一下vex指的是顶点arc指的是弧
 };
 
 bool GraphFull(OLGraph &G);
@@ -45,7 +45,7 @@ bool DeleteArc_head(OLGraph &G, int head);
 int LocateVex(OLGraph G, VertexType u)
 {
     for (int i = 0; i < G.vexnum; i++)
-        if (strcmp(u, G.xlist[i].id) == 0) // 字符串匹配查找指定名称顶点的下标
+        if (strcmp(G.xlist[i].id, u) == 0) // 字符串匹配查找指定名称顶点的下标
             return i;                      // 找到了就返回顶点的下标
     return -1;                             // 如果没有找到位置就返回-1，默认返回-1
 }
@@ -56,8 +56,8 @@ bool InsertVex(OLGraph &G, VertexType id, int credit)
     {                                      // 如果空间已满则放弃插入
         G.xlist[G.vexnum].credit = credit; //
         strcpy(G.xlist[G.vexnum].id, id);
+        cout << "顶点"<<G.xlist[G.vexnum].id<<"插入成功！" << endl;
         G.vexnum++;
-        cout << "插入成功！" << endl;
         return true;
     }
     else
@@ -71,7 +71,7 @@ bool InsertVex(OLGraph &G, VertexType id, int credit)
 bool InsertArc(OLGraph &G, VertexType head, VertexType tail)
 {
     bool outflag = true;              // true表示未找到相同的弧
-    ArcBox *Boxp, *p;                 // p用于遍历头链
+    ArcBox *Boxp, *p = NULL;          // p用于遍历头链
     Boxp = new ArcBox;                // 开辟一个结点空间，这个空间在删除时将会被回收
     int headvex = LocateVex(G, head); // 找到头的位置
     int tailvex = LocateVex(G, tail); // 找到尾的位置，这里不使用Locate函数可能会减少时间复杂度
@@ -100,10 +100,10 @@ bool InsertArc(OLGraph &G, VertexType head, VertexType tail)
             Boxp->hlink = G.xlist[headvex].firstout;
             Boxp->tlink = G.xlist[tailvex].firstin;
             G.xlist[headvex].firstout = Boxp;
-            G.xlist[tailvex].firstout = Boxp; // 向十字链表中插入了新的弧
-            G.xlist[tailvex].indegree++;      // 记录入度的增加，方便进行拓扑排序
-            G.arcnum++;                       // 弧总数增加
-            cout << "新的弧插入成功" << endl;
+            G.xlist[tailvex].firstin = Boxp; // 向十字链表中插入了新的弧
+            G.xlist[tailvex].indegree++;     // 记录入度的增加，方便进行拓扑排序
+            G.arcnum++;                      // 弧总数增加
+            cout << "弧"<<head<<"-->"<<tail<<"插入成功" << endl;
             return true;
         }
         else
@@ -121,7 +121,7 @@ bool DeleteVex(OLGraph &G, VertexType id)
 {
     int loc = LocateVex(G, id);
     G.xlist[loc].able = false;
-    return DeleteArc_head(G, loc); // 其实只需要删除出弧，因为入弧为0
+    return DeleteArc_head(G, loc); // 其实只需要删除出弧，因为入弧为0，但需要同步修改入度
 }
 // 删除出弧，因为入度为0，所以不用考虑入弧
 bool DeleteArc_head(OLGraph &G, int head)
@@ -152,6 +152,44 @@ bool GraphEmpty(OLGraph &G)
         return true;
     else
         return false;
+}
+// 邻接表和逆邻接表的格式打印出十字链表 只打印able==true的顶点信息
+bool PrintList(OLGraph &G)
+{
+    cout << endl;
+    cout << endl;
+    ArcBox *p;
+    if (GraphEmpty(G))
+        cout << "拜托图里没有顶点啊" << endl;
+    else
+    {
+        cout << "课程名称" << endl;
+        for (int i = 0; i < G.vexnum; i++)
+        {
+            if (G.xlist[i].able)
+            {
+                cout << G.xlist[i].id << ":" << endl;
+                cout << "邻接表";
+                p = G.xlist[i].firstout;
+                while (p != NULL)
+                {
+                    cout << "-->" << G.xlist[p->tailvex].id;
+                    p = p->hlink;
+                }
+                cout << endl;
+                cout << "逆邻接表";
+                p = G.xlist[i].firstin;
+                while (p != NULL)
+                {
+                    cout << "-->" << G.xlist[p->headvex].id;
+                    p = p->tlink;
+                }
+                cout << endl;
+                cout << endl;
+            }
+        }
+    }
+    return true;
 }
 
 #endif
