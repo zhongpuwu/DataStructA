@@ -104,10 +104,12 @@ bool PrintCourse(Course Co)
     }
     else
     {
+        cout << setw(3) << "id"
+             << ":" << right
+             << "level" << endl;
         for (int i = 0; i < Co.Conum; i++)
         {
-            cout << Co.CT[i].id << ":" << Co.CT[i].level << endl;
-            ;
+            cout << setw(3) << Co.CT[i].id << ":" << Co.CT[i].level << endl;
         }
     }
     return true;

@@ -6,6 +6,7 @@
 // 修订：2017年11月
 //==============================================
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -38,7 +39,6 @@ int main(int argc, char const *argv[])
     Course Co;
     Co.CT = new CourseTag[G.vexnum];
     ToplogicalSort(G, Co);
-    cout << "level" << endl;
     PrintCourse(Co);
 
     system("pause");
