@@ -31,7 +31,7 @@ void InsertValue(OLGraph &G, int &MaxTerm, int &Maxcredit)
         cin >> credit;
         if (!isdigit(credit) && credit < 0)
         {
-            cout << "学号有误，请重新输入这个顶点" << endl;
+            cout << "学分有误，请重新输入这个顶点" << endl;
             continue;
         }
         else
@@ -137,7 +137,9 @@ int main(int argc, char const *argv[])
             PrintCourse(Co);
             TeachingPlan(Co, MaxTerm, MaxCredit);
             cout << endl
-                 << "安排成功！";
+                 << "教学计划编制成功！"
+                 << endl
+                 << endl;
         }
     }
     else

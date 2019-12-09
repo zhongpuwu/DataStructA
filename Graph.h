@@ -45,7 +45,7 @@ bool ToplogicalSort(OLGraph &G, Course &Co)
 {
     LinkQueue LQ;
     InitQueue(LQ);
-    int head, level = 0;
+    int head, level = 0;        // level表示课程的等级
     bool ring_flag = false;     // 判断图中是否有环
     bool indegree_flag = false; // 判断一次循环中是否发现了入度为0的点
     bool flag = false;          // 判断一次循环中是否发现了able为true的点
@@ -83,7 +83,7 @@ bool ToplogicalSort(OLGraph &G, Course &Co)
         // 1.一次循环中没有发现入度为0的顶点
         // 2.这次循环中发现了able为true的顶点
         if (!indegree_flag)
-            break; // 退出循环的条件是一次循环中找不到入度为0的点
+            break; // 退出循环的条件是一次循环中没有发现入度为0的点
     }
     if (ring_flag)
     {
@@ -142,6 +142,7 @@ void TeachingPlan(Course &Co, int MaxTerm, int MaxCredit)
         }
         for (int i = 0; i < n; i++)
         {
+            // 发现了不同level的课程就退出进入下一学期
             if (Co.CT[c].level == t)
             {
                 cout << " " << Co.CT[c].id;
@@ -150,25 +151,26 @@ void TeachingPlan(Course &Co, int MaxTerm, int MaxCredit)
             }
             else
                 break;
-            if (csum > MaxCredit)
+            if (csum > MaxCredit) // 学分超了也会退出
                 break;
         }
         term--;
+        // 处理剩余的课程
         if (csum + Co.CT[c].credit < MaxCredit && Co.CT[c].level == t)
         {
             csum += Co.CT[c].credit;
-            cout << " " << Co.CT[c++].id;
+            cout << " " << Co.CT[c].id;
+            c++;
             md--;
         }
         cout << endl;
     }
     cout << endl;
     cout << "接下来进行第二种安排方式——尽量提前修完所有课程：" << endl;
-    term = MaxTerm;             // 相当于循环变量
-    n = Co.Conum / MaxTerm + 1; // 每学期的理论课程数
-    c = 0;                      // 标记当前导出数据的指针位置
-    t = 1;                      // 记录当前学期所属的level一旦确定，不能接受其他level
-    csum = 0;                   // 记录每学期的实际学分
+    term = MaxTerm; // 相当于循环变量
+    c = 0;          // 标记当前导出数据的指针位置
+    t = 1;          // 记录当前学期所属的level一旦确定，不能接受其他level
+    csum = 0;       // 记录每学期的实际学分
     // 不同等级的课程不能放在同一学期
     while (!(term <= 0))
     {
@@ -181,9 +183,9 @@ void TeachingPlan(Course &Co, int MaxTerm, int MaxCredit)
             cout << endl;
             continue;
         }
-        for (int i = 0; i < n; i++)
+        while (true)
         {
-            if (Co.CT[c].level == t)
+            if (Co.CT[c].level == t && csum + Co.CT[c].credit <= MaxCredit)
             {
                 cout << " " << Co.CT[c].id;
                 csum += Co.CT[c].credit;

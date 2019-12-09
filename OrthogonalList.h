@@ -20,7 +20,7 @@ struct ArcBox // 弧结点，原来这东西叫做弧?!
     ArcBox *hlink = NULL, *tlink = NULL; // 分别为弧头相同和弧尾相同的弧的链域
     InfoType *info = NULL;               // 该弧相关信息的指针(可此题不需要)
 };
-struct VexNode // 顶点结点不如说是顶点数组
+struct VexNode // 顶点结点，不如说是顶点数组
 {
     int credit;                               // 保存该顶点的学分
     int indegree = 0;                         // 保存顶点的入度，求拓扑排序时会用
@@ -35,6 +35,7 @@ struct OLGraph // 十字链表表示的有向图
     int arcnum = 0;                // 注意一下vex指的是顶点arc指的是弧
 };
 
+// 函数原型
 bool GraphFull(OLGraph &G);
 bool GraphEmpty(OLGraph &G);
 bool DeleteArc_head(OLGraph &G, int head);
@@ -84,7 +85,7 @@ bool InsertArc(OLGraph &G, VertexType head, VertexType tail)
     {
         cout << "没有在图中找到有效结点，数据无效" << endl;
         delete Boxp;  // 释放无效的弧内存
-        return false; // 头尾顶点有一个没有找到则标志着输入无效
+        return false; // 头或尾顶点任一个在图中不存在则标志着输入无效
     }
     else // 为了保证生成的图是简单图，需要判断是否存在重复的弧，不存在才能插入
     {    // 这样做的目的是减少删除弧时的时间复杂度
@@ -164,7 +165,7 @@ bool PrintList(OLGraph &G)
     cout << endl;
     ArcBox *p;
     if (GraphEmpty(G))
-        cout << "拜托图里没有顶点啊" << endl;
+        cout << "图中没有顶点啊！" << endl;
     else
     {
         cout << "课程名称" << endl;
