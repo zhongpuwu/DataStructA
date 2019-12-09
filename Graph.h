@@ -115,8 +115,88 @@ bool PrintCourse(Course Co)
         {
             cout << setw(3) << Co.CT[i].id << ":" << Co.CT[i].level << endl;
         }
+        cout << endl;
     }
     return true;
+}
+void TeachingPlan(Course &Co, int MaxTerm, int MaxCredit)
+{
+    cout << "接下来进行第一种安排方式——每一学期尽量平均分配：" << endl;
+    int term = MaxTerm;          // 相当于循环变量
+    int n = Co.Conum / MaxTerm;  // 每学期的理论课程数
+    int md = Co.Conum % MaxTerm; // 平均分配后剩余的课程位
+    int c = 0;                   // 标记当前导出数据的指针位置
+    int t = 0;                   // 记录当前学期所属的level一旦确定，不能接受其他level
+    int csum = 0;                // 记录每学期的实际学分
+    // 不同等级的课程不能放在同一学期
+    while (!(term <= 0 && md <= 0))
+    {
+        t = Co.CT[c].level;
+        csum = 0;
+        cout << "第" << MaxTerm - term + 1 << "学期的课程有：";
+        if (c >= Co.Conum)
+        {
+            term--;
+            cout << endl;
+            continue;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if (Co.CT[c].level == t)
+            {
+                cout << " " << Co.CT[c].id;
+                csum += Co.CT[c].credit;
+                c++;
+            }
+            else
+                break;
+            if (csum > MaxCredit)
+                break;
+        }
+        term--;
+        if (csum + Co.CT[c].credit < MaxCredit && Co.CT[c].level == t)
+        {
+            csum += Co.CT[c].credit;
+            cout << " " << Co.CT[c++].id;
+            md--;
+        }
+        cout << endl;
+    }
+    cout << endl;
+    cout << "接下来进行第二种安排方式——尽量提前修完所有课程：" << endl;
+    term = MaxTerm;             // 相当于循环变量
+    n = Co.Conum / MaxTerm + 1; // 每学期的理论课程数
+    c = 0;                      // 标记当前导出数据的指针位置
+    t = 1;                      // 记录当前学期所属的level一旦确定，不能接受其他level
+    csum = 0;                   // 记录每学期的实际学分
+    // 不同等级的课程不能放在同一学期
+    while (!(term <= 0))
+    {
+        t = Co.CT[c].level;
+        csum = 0;
+        cout << "第" << MaxTerm - term + 1 << "学期的课程有：";
+        if (c >= Co.Conum)
+        {
+            term--;
+            cout << endl;
+            continue;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if (Co.CT[c].level == t)
+            {
+                cout << " " << Co.CT[c].id;
+                csum += Co.CT[c].credit;
+                c++;
+            }
+            else
+                break;
+            if (csum > MaxCredit)
+                break;
+        }
+        term--;
+        cout << endl;
+    }
 }
 
 #endif

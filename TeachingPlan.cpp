@@ -13,8 +13,10 @@ using namespace std;
 #include <String.h>
 #include "Graph.h"
 
-void InsertValue(OLGraph &G)
+void InsertValue(OLGraph &G, int &MaxTerm, int &Maxcredit)
 {
+    cout << "请输入学期数和每学期的最大学分" << endl;
+    cin >> MaxTerm >> Maxcredit;
     cout << "请输入每门课的名称（三位字符）和学分例如c1 4（输入qt停止）：" << endl;
     VertexType id, v1, v2;
     int credit;
@@ -69,7 +71,9 @@ void InsertValue(OLGraph &G)
 int main(int argc, char const *argv[])
 {
     OLGraph G;
-    int choice;
+    int MaxTerm = 8;    // 默认的学期数是8
+    int MaxCredit = 10; // 默认的每学期最大学分是10
+    int choice = 1;     // 默认的选择是1
     int credits[] = {4, 3, 4, 3, 2, 5, 3, 4, 5, 5, 5, 1};
     VertexType ids[] = {"c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "c11", "c12"};
     int Sq[][12] = {
@@ -85,7 +89,7 @@ int main(int argc, char const *argv[])
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
         {0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-    };
+    }; // 教材上的数据
     cout << "请选择采用哪一种的实例" << endl
          << "1.教材案例，存在正解" << endl
          << "2.修改后的教材案例，图中有环，无解" << endl
@@ -109,7 +113,7 @@ int main(int argc, char const *argv[])
         PrintList(G);
         break;
     case 3:
-        InsertValue(G);
+        InsertValue(G, MaxTerm, MaxCredit);
         // 打印测试数据十字链表形式
         if (G.vexnum >= 2 && G.arcnum >= 1)
             PrintList(G);
@@ -125,22 +129,21 @@ int main(int argc, char const *argv[])
     Course Co;
     Co.CT = new CourseTag[G.vexnum];
 
-
     if (G.vexnum >= 2 && G.arcnum >= 1)
     {
         if (ToplogicalSort(G, Co))
         {
             // 打印出拓扑排序的结果
             PrintCourse(Co);
+            TeachingPlan(Co, MaxTerm, MaxCredit);
+            cout << endl
+                 << "安排成功！";
         }
     }
     else
     {
         cout << "数据不完整，无法排序！" << endl;
     }
-
-    
-
 
     // 回收动态分配的结果集空间
     delete[] Co.CT;
