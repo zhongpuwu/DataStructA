@@ -10,7 +10,7 @@
 */
 
 #define MAX_VERTEX_NUM 40          // 最大节点数量
-#define MAX_NAME 4                 // 顶点名称的最大长度
+#define MAX_NAME 6                 // 顶点名称的最大长度
 typedef int InfoType;              // 定义弧相关信息的类型
 typedef char VertexType[MAX_NAME]; // 定义顶点的名称类型
 
@@ -52,11 +52,16 @@ int LocateVex(OLGraph G, VertexType u)
 // 向十字链表中添加一个顶点结点，如果超过了最大顶点数量，只能放弃输入
 bool InsertVex(OLGraph &G, VertexType id, int credit)
 {
-    if (!GraphFull(G))                     // 在图有多余空间时插入
+    if (LocateVex(G, id) != -1)
+    {
+        cout << "此顶点已存在!" << endl;
+        return true;
+    }
+    else if (!GraphFull(G))                // 在图有多余空间时插入
     {                                      // 如果空间已满则放弃插入
         G.xlist[G.vexnum].credit = credit; //
         strcpy(G.xlist[G.vexnum].id, id);
-        cout << "顶点"<<G.xlist[G.vexnum].id<<"插入成功！" << endl;
+        cout << "顶点" << G.xlist[G.vexnum].id << "插入成功！" << endl;
         G.vexnum++;
         return true;
     }
@@ -103,7 +108,7 @@ bool InsertArc(OLGraph &G, VertexType head, VertexType tail)
             G.xlist[tailvex].firstin = Boxp; // 向十字链表中插入了新的弧
             G.xlist[tailvex].indegree++;     // 记录入度的增加，方便进行拓扑排序
             G.arcnum++;                      // 弧总数增加
-            cout << "弧"<<head<<"-->"<<tail<<"插入成功" << endl;
+            cout << "弧" << head << "-->" << tail << "插入成功" << endl;
             return true;
         }
         else
@@ -156,7 +161,6 @@ bool GraphEmpty(OLGraph &G)
 // 邻接表和逆邻接表的格式打印出十字链表 只打印able==true的顶点信息
 bool PrintList(OLGraph &G)
 {
-    cout << endl;
     cout << endl;
     ArcBox *p;
     if (GraphEmpty(G))

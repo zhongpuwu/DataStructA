@@ -87,11 +87,14 @@ bool ToplogicalSort(OLGraph &G, Course &Co)
     }
     if (ring_flag)
     {
-        cout << "图中有环，无法进行拓扑排序!" << endl;
+        cout << "图中有环，无法进行拓扑排序!" << endl
+             << endl;
         return false;
     }
     else
     {
+        cout << "排序成功！" << endl
+             << endl;
         return true;
     }
 }
@@ -104,6 +107,7 @@ bool PrintCourse(Course Co)
     }
     else
     {
+        cout << "下面是对课程的分级：" << endl;
         cout << setw(3) << "id"
              << ":" << right
              << "level" << endl;
