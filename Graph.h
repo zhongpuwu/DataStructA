@@ -123,7 +123,7 @@ void TeachingPlan(Course &Co, int MaxTerm, int MaxCredit)
 {
     cout << "接下来进行第一种安排方式——每一学期尽量平均分配：" << endl;
     int term = MaxTerm;          // 相当于循环变量
-    int n = Co.Conum / MaxTerm;  // 每学期的理论课程数
+    int n = Co.Conum / MaxTerm;  // 每学期的最小课程数
     int md = Co.Conum % MaxTerm; // 平均分配后剩余的课程位
     int c = 0;                   // 标记当前导出数据的指针位置
     int t = 0;                   // 记录当前学期所属的level一旦确定，不能接受其他level

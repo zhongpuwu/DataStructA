@@ -14,7 +14,7 @@
 typedef int InfoType;              // 定义弧相关信息的类型
 typedef char VertexType[MAX_NAME]; // 定义顶点的名称类型
 
-struct ArcBox // 弧结点，原来这东西叫做弧?!
+struct ArcBox // 弧结点，原来这玩意叫做弧?!
 {
     int tailvex, headvex;                // 该弧的尾和头顶点的位置(就是下标而已)
     ArcBox *hlink = NULL, *tlink = NULL; // 分别为弧头相同和弧尾相同的弧的链域
@@ -22,7 +22,7 @@ struct ArcBox // 弧结点，原来这东西叫做弧?!
 };
 struct VexNode // 顶点结点，不如说是顶点数组
 {
-    int credit;                               // 保存该顶点的学分
+    int credit;                               // 保存该顶点课程的学分
     int indegree = 0;                         // 保存顶点的入度，求拓扑排序时会用
     bool able = true;                         // 指示该顶点是否被删除，被删除的顶点不配拥有弧
     VertexType id;                            // 保存该顶点的课程代号
